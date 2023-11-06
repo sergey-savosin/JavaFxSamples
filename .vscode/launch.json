@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Stat",
+            "request": "launch",
+            "mainClass": "Stat",
+            "projectName": "JavaFxSamples_931f4780"
+        },
+        {
+            "type": "java",
             "name": "startingPoint",
             "request": "launch",
             "mainClass": "startingPoint.Main",

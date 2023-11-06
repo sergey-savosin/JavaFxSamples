@@ -1,12 +1,12 @@
 {
     "java.project.sourcePaths": [
-        "hellofx",
-        "startingPoint"
+      "hellofx",
+      "TestResultStat"
     ],
     "java.project.outputPath": "bin",
     "java.project.referencedLibraries": [
         "C:/bin/javafx-sdk-17.0.8/lib/**/*.jar",
-        "C:/git/java/lib/**/*.jar"
+        "C:/git/JavaFxSamples/lib/**/*.jar"
     ],
     "java.configuration.runtimes": [
         {

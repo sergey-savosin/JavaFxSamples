@@ -25,7 +25,7 @@ public class Stat {
         String user = "yvhffapnyurtaug2izxtw4omjvb7ng7h6tk334hgc4zpjklenvfq";
 
         String userEncoded = Base64.getEncoder().encodeToString(user.getBytes());
-        String strUrl = "https://ittfs.avp.ru/tfs/DefaultCollection/KORM/_apis/test/runs?minLastUpdatedDate=2023-10-13&maxLastUpdatedDate=2023-10-15T01:01:01&api-version=6.0";
+        String strUrl = "https://ittfs.avp.ru/tfs/DefaultCollection/KORM/_apis/test/runs?minLastUpdatedDate=2023-11-04&maxLastUpdatedDate=2023-11-07T01:01:01&api-version=6.0";
         
         TrustManager[] trustAllCerts = new TrustManager[]{
             new X509TrustManager() {
@@ -67,7 +67,7 @@ public class Stat {
 
         HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
         System.out.println("Result: " + response.statusCode());
-        System.out.println(response.body());
+        //System.out.println(response.body());
     }
 
 }
