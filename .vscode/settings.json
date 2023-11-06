@@ -1,0 +1,18 @@
+{
+    "java.project.sourcePaths": [
+        "hellofx",
+        "startingPoint"
+    ],
+    "java.project.outputPath": "bin",
+    "java.project.referencedLibraries": [
+        "C:/bin/javafx-sdk-17.0.8/lib/**/*.jar",
+        "C:/git/java/lib/**/*.jar"
+    ],
+    "java.configuration.runtimes": [
+        {
+          "name": "JavaSE-20",
+          "path": "C:/bin/jdk-20",
+          "default": true
+        },
+      ]
+}
