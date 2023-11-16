@@ -4,6 +4,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import javafx.beans.binding.ObjectBinding;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,8 +17,10 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
@@ -42,6 +46,12 @@ public class Controller extends BaseController {
 
     @FXML
     private ComboBox<String> priorities;
+
+    @FXML
+    private ListView<Book> listView;
+
+    @FXML
+    private TextField textField;
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
@@ -102,6 +112,25 @@ public class Controller extends BaseController {
 
             return cell;
         });
+
+        ObservableList<Book> list = FXCollections.observableArrayList(
+            new Book("Harry Potter", "J.K. Rowling"),
+            new Book("Cronicles of Narnia", "C.S. Lewis")
+            );
+        listView.setItems(list);
+        listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
+        listView.setEditable(true);
+        listView.setCellFactory(CheckBoxListCell.forListView(item -> {
+            BooleanProperty o = new SimpleBooleanProperty();
+            o.addListener((obs, prev, next) -> {
+                log("Checkbox for " + item + " changed from " + prev + " to " + next);
+            });
+            return o;
+        }));
+        listView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue)->{
+            log("Selected: " + newValue);
+        });
     }
 
     private ObservableValue<? extends Paint> getColorBinding() {
@@ -123,6 +152,15 @@ public class Controller extends BaseController {
     public void onAdd(ActionEvent event) {
         choiceBox.getItems().add(new Country("test", "Элемент " + System.currentTimeMillis() % 1000));
         choiceBox.show();
+    }
+
+    @FXML
+    public void onClick(ActionEvent event) {
+        if (textField.getText() != null && textField.getText().length() > 0)
+        {
+            listView.getItems().add( new Book(textField.getText(), null));
+            textField.clear();
+        }
     }
 
     private void onAction(ActionEvent actionevent1) {

@@ -41,6 +41,9 @@ public class Country {
                 if (string == null) {
                     return null;
                 }
+                if (string.length()<2) {
+                    return null;
+                }
                 String[] splits = string.split(",");
                 String name = splits[0].trim();
                 String continent = splits[1].trim();
