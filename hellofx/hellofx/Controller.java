@@ -21,6 +21,7 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.CheckBoxListCell;
+import javafx.scene.control.cell.ComboBoxListCell;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
@@ -33,102 +34,47 @@ import javafx.util.Callback;
 public class Controller extends BaseController {
     
     @FXML
-    private ChoiceBox<Country> choiceBox;
+    private ListView<Book> booksListView;
 
     @FXML
-    private ToggleButton toggleButton;
-
-    @FXML
-    private ComboBox<Country> comboBox;
-
-    @FXML
-    private ComboBox<Country> imageComboBox;
-
-    @FXML
-    private ComboBox<String> priorities;
-
-    @FXML
-    private ListView<Book> listView;
+    private ListView<String> authorsListView;
 
     @FXML
     private TextField textField;
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
-        Button b = new Button("Динамическая кнопка");
-        TextField t = new TextField("Динамо текстовое поле");
-        
-        t.setLayoutY(30);
-
-        choiceBox.setItems(FXCollections.observableArrayList(
-            new Country("India", "Asia"),
-            new Country("Pakistan", "Asia"),
-            new Country("UK", "Europe"),
-            new Country("USA", "North Amerika"),
-            new Country("Brazil", "South Amerika")
-            ));
-       
-        //choiceBox.setConverter(Country.getStringConverter());
-        choiceBox.setOnAction(event -> {
-            log("Selected " + choiceBox.getValue());
-        });
-        choiceBox.visibleProperty().bind(toggleButton.selectedProperty().not());
-
-        Circle circle = new Circle(18, 92, 15);
-        add(b, t, circle);
-        circle.fillProperty().bind(getColorBinding());
-
-        comboBox.setOnAction(this::onAction);
-        comboBox.setEditable(true);
-        comboBox.setConverter(Country.getStringConverter());
-
-        ObservableList<Country> countries = FXCollections.observableArrayList(
-            new Country("India", "Asia"),
-            new Country("Pakistan", "Asia"),
-            new Country("UK", "Europe"),
-            new Country("Africa", "Africa")
-        );
-
-        comboBox.setItems(countries);
-
-        imageComboBox.setItems(countries);
-        imageComboBox.setCellFactory(param -> new CountryCell());
-
-        priorities.setCellFactory(param -> {
-            ListCell<String> cell = new ListCell<>() {
-                @Override
-                protected void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-                    setText(item);
-                    if ("high".equalsIgnoreCase(item)) {
-                        setBackground(new Background(new BackgroundFill(Color.RED, new CornerRadii(0), Insets.EMPTY)));
-                    } else if ("medium".equalsIgnoreCase(item)) {
-                        setBackground(new Background(new BackgroundFill(Color.YELLOW, new CornerRadii(0), Insets.EMPTY)));
-                    } else {
-                        setBackground(new Background(new BackgroundFill(Color.GREEN, new CornerRadii(0), Insets.EMPTY)));
-                    }
-                }
-            };
-
-            return cell;
-        });
-
         ObservableList<Book> list = FXCollections.observableArrayList(
             new Book("Harry Potter", "J.K. Rowling"),
             new Book("Cronicles of Narnia", "C.S. Lewis")
             );
-        listView.setItems(list);
-        listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        booksListView.setItems(list);
+        booksListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        String[] authors = list.stream()
+            .map(Book::getAuthor)
+            .sorted()
+            .toArray(String[]::new);
+        
+        authorsListView.setCellFactory(ComboBoxListCell.forListView(authors));
+        authorsListView.setEditable(true);
+        authorsListView.setItems(FXCollections.observableArrayList(authors));
+        
+        booksListView.setEditable(true);
+        booksListView.setCellFactory(param -> new ListCell<Book>() {
+            @Override
+            protected void updateItem(Book item, boolean empty) {
+                super.updateItem(item, empty);
 
-        listView.setEditable(true);
-        listView.setCellFactory(CheckBoxListCell.forListView(item -> {
-            BooleanProperty o = new SimpleBooleanProperty();
-            o.addListener((obs, prev, next) -> {
-                log("Checkbox for " + item + " changed from " + prev + " to " + next);
-            });
-            return o;
-        }));
-        listView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue)->{
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.getName() + " - " + item.getAuthor());
+                }
+            }
+        }
+
+        );
+        booksListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue)->{
             log("Selected: " + newValue);
         });
     }
@@ -155,12 +101,8 @@ public class Controller extends BaseController {
     }
 
     @FXML
-    public void onClick(ActionEvent event) {
-        if (textField.getText() != null && textField.getText().length() > 0)
-        {
-            listView.getItems().add( new Book(textField.getText(), null));
-            textField.clear();
-        }
+    public void onValidate(ActionEvent event) {
+
     }
 
     private void onAction(ActionEvent actionevent1) {

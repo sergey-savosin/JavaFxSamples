@@ -12,4 +12,12 @@ public class Book {
     public String toString() {
         return "Book " + name + "\\" + author;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
 }
