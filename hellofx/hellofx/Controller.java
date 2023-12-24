@@ -68,7 +68,8 @@ public class Controller extends BaseController {
                 if (empty || item == null) {
                     setText(null);
                 } else {
-                    setText(item.getName() + " - " + item.getAuthor());
+                    setText(item.getName());
+                    item.setCell(this);
                 }
             }
         }
@@ -79,33 +80,18 @@ public class Controller extends BaseController {
         });
     }
 
-    private ObservableValue<? extends Paint> getColorBinding() {
-        return new ObjectBinding<Color>() {
-
-            {
-                super.bind(choiceBox.showingProperty());
-            }
-
-            @Override
-            protected Color computeValue() {
-                if (choiceBox.isShowing()) { return Color.LIMEGREEN; }
-                else { return Color.ORANGERED; }
-            }
-        };
-    }
-
-    @FXML
-    public void onAdd(ActionEvent event) {
-        choiceBox.getItems().add(new Country("test", "Элемент " + System.currentTimeMillis() % 1000));
-        choiceBox.show();
-    }
-
     @FXML
     public void onValidate(ActionEvent event) {
+        int i = 0;
 
-    }
-
-    private void onAction(ActionEvent actionevent1) {
-        log("Выбрано: " + comboBox.getValue());
+        for (Book book: booksListView.getItems()) {
+            if (book.getAuthor().equalsIgnoreCase(authorsListView.getItems().get(i))) {
+                log("Correct answer for " + book.getName());
+                book.getCell().setBackground(new Background(new BackgroundFill(Paint.valueOf("#00FF00"), null, null)));
+            } else {
+                book.getCell().setBackground(new Background(new BackgroundFill(Paint.valueOf("#FF0000"), null, null)));
+            }
+            i++;
+        }
     }
 }
