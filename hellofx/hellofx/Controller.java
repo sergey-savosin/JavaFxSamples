@@ -22,6 +22,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.control.cell.ComboBoxListCell;
+import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
@@ -29,18 +30,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.util.Callback;
+import javafx.util.StringConverter;
 
 
 public class Controller extends BaseController {
     
     @FXML
     private ListView<Book> booksListView;
-
-    @FXML
-    private ListView<String> authorsListView;
-
-    @FXML
-    private TextField textField;
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
@@ -55,26 +51,29 @@ public class Controller extends BaseController {
             .sorted()
             .toArray(String[]::new);
         
-        authorsListView.setCellFactory(ComboBoxListCell.forListView(authors));
-        authorsListView.setEditable(true);
-        authorsListView.setItems(FXCollections.observableArrayList(authors));
-        
         booksListView.setEditable(true);
-        booksListView.setCellFactory(param -> new ListCell<Book>() {
-            @Override
-            protected void updateItem(Book item, boolean empty) {
-                super.updateItem(item, empty);
+        booksListView.setCellFactory(TextFieldListCell.forListView(new StringConverter<Book>() {
 
-                if (empty || item == null) {
-                    setText(null);
+            @Override
+            public Book fromString(String string) {
+                if (string == null)
+                    return null;
+                
+                if (string.contains(",")) {
+                    String[] splits = string.split(",");
+                    return new Book(splits[0], splits[1]);
                 } else {
-                    setText(item.getName());
-                    item.setCell(this);
+                    return new Book(string, null);
                 }
             }
-        }
 
-        );
+            @Override
+            public String toString(Book object) {
+                return object.getName() + (object.getAuthor() == null ? "" : ", " + object.getAuthor());
+            }
+            
+        }));
+
         booksListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue)->{
             log("Selected: " + newValue);
         });
@@ -82,16 +81,5 @@ public class Controller extends BaseController {
 
     @FXML
     public void onValidate(ActionEvent event) {
-        int i = 0;
-
-        for (Book book: booksListView.getItems()) {
-            if (book.getAuthor().equalsIgnoreCase(authorsListView.getItems().get(i))) {
-                log("Correct answer for " + book.getName());
-                book.getCell().setBackground(new Background(new BackgroundFill(Paint.valueOf("#00FF00"), null, null)));
-            } else {
-                book.getCell().setBackground(new Background(new BackgroundFill(Paint.valueOf("#FF0000"), null, null)));
-            }
-            i++;
-        }
     }
 }

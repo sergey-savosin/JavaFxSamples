@@ -31,13 +31,7 @@
     <children>
         <AnchorPane fx:id = "pane" prefHeight="200.0" prefWidth="238.0">
             <children>
-                <Label layoutX="50" layoutY="5.0" text="Match the following">
-                    <font>
-                        <Font size="22.0"/>
-                    </font>
-                </Label>
                 <ListView fx:id="booksListView" layoutX="8.0" layoutY="40" prefHeight="100.0" prefWidth="170.0" />
-                <ListView fx:id="authorsListView" layoutX="190.0" layoutY="40" prefHeight="100.0" prefWidth="170.0" />
                 <Button layoutX="230.0" layoutY="160" mnemonicParsing="false" onAction="#onValidate" text="Validate" />
             </children>
         </AnchorPane>
